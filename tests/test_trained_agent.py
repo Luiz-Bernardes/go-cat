@@ -1,6 +1,5 @@
-from environment import Environment
-from agent import Agent
-
+from ai_cat.environments.grid_world import Environment
+from ai_cat.agents.agent import Agent
 
 environment = Environment()
 agent = Agent()

@@ -1,5 +1,4 @@
-from agent import Agent
-
+from ai_cat.agents.agent import Agent
 
 agent = Agent()
 

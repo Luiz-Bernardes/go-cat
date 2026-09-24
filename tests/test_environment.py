@@ -1,5 +1,4 @@
-from environment import Environment
-
+from ai_cat.environments.grid_world import Environment
 
 environment = Environment()
 
