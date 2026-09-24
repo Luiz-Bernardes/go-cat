@@ -1,17 +1,18 @@
 from ai_cat.agents.agent import Agent
 
-agent = Agent()
+def test_agent_exploits_best_action_when_exploration_is_zero():
+    agent = Agent()
 
-state = (0, 0)
+    state = (0, 0)
 
-agent.q_table[state] = {
-    "up": 1.0,
-    "down": 2.0,
-    "left": 0.5,
-    "right": 10.0
-}
+    agent.q_table[state] = {
+        "up": 1.0,
+        "down": 2.0,
+        "left": 0.5,
+        "right": 10.0,
+    }
 
-agent.exploration_rate = 0.0
+    agent.exploration_rate = 0.0
 
-for _ in range(10):
-    print(agent.choose_action(state))
+    for _ in range(10):
+        assert agent.choose_action(state) == "right"
