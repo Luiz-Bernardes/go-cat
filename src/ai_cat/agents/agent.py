@@ -11,19 +11,13 @@ class Agent:
             "right",
         ]
 
-        self.learning = QLearning()
+        self.learning = QLearning(self.actions)
 
     def get_q_values(self, state):
-        return self.learning.get_q_values(
-            state,
-            self.actions,
-        )
+        return self.learning.get_q_values(state)
 
     def choose_action(self, state):
-        return self.learning.choose_action(
-            state,
-            self.actions,
-        )
+        return self.learning.choose_action(state)
 
     def learn(self, state, action, reward, next_state):
         self.learning.learn(
@@ -31,7 +25,6 @@ class Agent:
             action,
             reward,
             next_state,
-            self.actions,
         )
 
     def decay_exploration(self):
