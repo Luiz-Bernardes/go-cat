@@ -30,7 +30,10 @@ class Environment:
         elif action == "right" and x < self.size - 1:
             x += 1
 
-        self.cat_position = np.array([int(x), int(y)])
+        new_position = (int(x), int(y))
+
+        if new_position not in self.obstacles:
+            self.cat_position = np.array(new_position)
 
         reward = -1
         done = False

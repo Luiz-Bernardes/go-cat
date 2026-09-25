@@ -42,3 +42,14 @@ def test_environment_reaches_food():
     assert list(environment.cat_position) == [7, 7]
     assert reward == 10
     assert done is True
+
+def test_environment_blocks_obstacle():
+    environment = Environment()
+
+    environment.cat_position = [2, 1]
+
+    reward, done = environment.step("right")
+
+    assert list(environment.cat_position) == [2, 1]
+    assert reward == -1
+    assert done is False
