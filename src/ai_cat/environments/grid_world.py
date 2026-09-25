@@ -9,6 +9,12 @@ class Environment:
         self.cat_position = np.array([0, 0])
         self.food_position = np.array([7, 7])
 
+        self.obstacles = {
+            (3, 1),
+            (4, 1),
+            (5, 1),
+        }
+
     def step(self, action):
         x, y = self.cat_position
 
@@ -44,6 +50,8 @@ class Environment:
                     row += "🐱 "
                 elif [x, y] == list(self.food_position):
                     row += "🍎 "
+                elif (x, y) in self.obstacles:
+                    row += "█ "
                 else:
                     row += ". "
 
