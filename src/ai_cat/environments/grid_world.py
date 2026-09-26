@@ -77,6 +77,16 @@ class Environment:
 
         return perception
 
+    def get_perception_state(self):
+        perception = self.get_perception()
+
+        return (
+            perception["up"],
+            perception["down"],
+            perception["left"],
+            perception["right"],
+        )
+
     def get_state(self):
         perception = self.get_perception()
 

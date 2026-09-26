@@ -97,8 +97,6 @@ def test_environment_returns_cat_perception():
         "right": "obstacle",
     }
 
-
-
 def test_environment_returns_state():
     environment = Environment()
 
@@ -109,4 +107,18 @@ def test_environment_returns_state():
     assert state == (
         (2, 1),
         ("empty", "empty", "empty", "obstacle"),
+    )
+
+def test_environment_returns_perception_state():
+    environment = Environment()
+
+    environment.cat_position = np.array([2, 1])
+
+    state = environment.get_perception_state()
+
+    assert state == (
+        "empty",
+        "empty",
+        "empty",
+        "obstacle",
     )

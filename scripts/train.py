@@ -13,7 +13,7 @@ for episode in range(episodes):
     agent.position = [0, 0]
 
     for step in range(max_steps):
-        state = tuple(agent.position)
+        state = agent.get_state(environment)
 
         action = agent.choose_action(state)
 
@@ -21,7 +21,7 @@ for episode in range(episodes):
 
         agent.position = list(environment.cat_position)
 
-        next_state = tuple(agent.position)
+        next_state = agent.get_state(environment)
 
         agent.learn(
             state,

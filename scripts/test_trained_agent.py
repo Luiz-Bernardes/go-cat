@@ -39,7 +39,7 @@ def test_trained_agent_finds_food_without_crossing_obstacles():
         agent.position = [0, 0]
 
         for _ in range(max_steps):
-            state = tuple(agent.position)
+            state = agent.get_state(environment)
 
             action = agent.choose_action(state)
 
@@ -47,7 +47,7 @@ def test_trained_agent_finds_food_without_crossing_obstacles():
 
             agent.position = list(environment.cat_position)
 
-            next_state = tuple(agent.position)
+            next_state = agent.get_state(environment)
 
             agent.learn(
                 state,
@@ -71,7 +71,7 @@ def test_trained_agent_finds_food_without_crossing_obstacles():
     print("\nCaminho aprendido:\n")
 
     for step in range(max_steps):
-        state = tuple(agent.position)
+        state = agent.get_state(environment)
 
         action = agent.choose_action(state)
 
@@ -87,7 +87,6 @@ def test_trained_agent_finds_food_without_crossing_obstacles():
 
         if done:
             break
-
 
     print("\nResultado:")
     print(f"Comida encontrada: {tuple(agent.position)}")
