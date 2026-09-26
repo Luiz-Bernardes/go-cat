@@ -16,6 +16,9 @@ class Agent:
     def get_q_values(self, state):
         return self.learning.get_q_values(state)
 
+    def get_state(self, environment):
+        return environment.get_state()
+
     def choose_action(self, state):
         return self.learning.choose_action(state)
 

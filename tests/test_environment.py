@@ -6,7 +6,6 @@ def test_environment_initial_position():
 
     assert list(environment.cat_position) == [0, 0]
 
-
 def test_environment_initial_food_position():
     environment = Environment()
 
@@ -50,7 +49,6 @@ def test_environment_size():
 
     assert environment.size == 10
 
-
 def test_environment_reset():
     environment = Environment()
 
@@ -60,7 +58,6 @@ def test_environment_reset():
     environment.reset()
 
     assert list(environment.cat_position) == [0, 0]
-
 
 def test_environment_reaches_food():
     environment = Environment()
@@ -85,3 +82,31 @@ def test_environment_blocks_obstacle():
     assert list(environment.cat_position) == [2, 1]
     assert reward == -1
     assert done is False
+
+def test_environment_returns_cat_perception():
+    environment = Environment()
+
+    environment.cat_position = np.array([2, 1])
+
+    perception = environment.get_perception()
+
+    assert perception == {
+        "up": "empty",
+        "down": "empty",
+        "left": "empty",
+        "right": "obstacle",
+    }
+
+
+
+def test_environment_returns_state():
+    environment = Environment()
+
+    environment.cat_position = np.array([2, 1])
+
+    state = environment.get_state()
+
+    assert state == (
+        (2, 1),
+        ("empty", "empty", "empty", "obstacle"),
+    )

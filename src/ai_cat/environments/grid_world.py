@@ -50,6 +50,46 @@ class Environment:
 
         return reward, done
 
+    def get_perception(self):
+        x, y = self.cat_position
+
+        positions = {
+            "up": (x, y - 1),
+            "down": (x, y + 1),
+            "left": (x - 1, y),
+            "right": (x + 1, y),
+        }
+
+        perception = {}
+
+        for direction, (px, py) in positions.items():
+            if px < 0 or px >= self.size or py < 0 or py >= self.size:
+                perception[direction] = "wall"
+
+            elif (px, py) in self.obstacles:
+                perception[direction] = "obstacle"
+
+            elif (px, py) in self.foods:
+                perception[direction] = "food"
+
+            else:
+                perception[direction] = "empty"
+
+        return perception
+
+    def get_state(self):
+        perception = self.get_perception()
+
+        return (
+            tuple(self.cat_position),
+            (
+                perception["up"],
+                perception["down"],
+                perception["left"],
+                perception["right"],
+            ),
+        )
+
     def display(self):
         for y in range(self.size):
             row = ""
