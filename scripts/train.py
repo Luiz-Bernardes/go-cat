@@ -39,5 +39,5 @@ for episode in range(episodes):
         print(
             f"Episódio: {episode + 1} | "
             f"Passos: {step + 1} | "
-            f"Exploração: {agent.exploration_rate:.3f}"
+            f"Exploração: {agent.learning.exploration_rate:.3f}"
         )

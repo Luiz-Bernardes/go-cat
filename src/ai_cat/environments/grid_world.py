@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class Environment:
     def __init__(self, size=10):
         self.size = size
@@ -7,7 +8,10 @@ class Environment:
 
     def reset(self):
         self.cat_position = np.array([0, 0])
-        self.food_position = np.array([7, 7])
+
+        self.foods = {
+            (7, 7),
+        }
 
         self.obstacles = {
             (3, 1),
@@ -38,7 +42,7 @@ class Environment:
         reward = -1
         done = False
 
-        if np.array_equal(self.cat_position, self.food_position):
+        if tuple(self.cat_position) in self.foods:
             reward = 10
             done = True
 
@@ -51,7 +55,7 @@ class Environment:
             for x in range(self.size):
                 if [x, y] == list(self.cat_position):
                     row += "🐱 "
-                elif [x, y] == list(self.food_position):
+                elif (x, y) in self.foods:
                     row += "🍎 "
                 elif (x, y) in self.obstacles:
                     row += "█ "

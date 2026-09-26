@@ -1,5 +1,5 @@
+import numpy as np
 from ai_cat.environments.grid_world import Environment
-
 
 def test_environment_initial_position():
     environment = Environment()
@@ -10,8 +10,36 @@ def test_environment_initial_position():
 def test_environment_initial_food_position():
     environment = Environment()
 
-    assert list(environment.food_position) == [7, 7]
+    assert environment.foods == {(7, 7)}
 
+def test_environment_supports_multiple_foods():
+    environment = Environment()
+
+    environment.foods.add((2, 2))
+
+    assert environment.foods == {
+        (7, 7),
+        (2, 2),
+    }
+
+def test_environment_reaches_any_food():
+    environment = Environment()
+
+    environment.foods = {
+        (2, 2),
+        (7, 7),
+    }
+
+    environment.cat_position = np.array([0, 2])
+
+    reward, done = environment.step("right")
+    assert done is False
+
+    reward, done = environment.step("right")
+
+    assert list(environment.cat_position) == [2, 2]
+    assert reward == 10
+    assert done is True
 
 def test_environment_size():
     environment = Environment()
