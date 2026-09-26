@@ -37,7 +37,7 @@ def test_trained_agent_finds_food():
         agent.decay_exploration()
 
     # Teste
-    agent.exploration_rate = 0
+    agent.learning.exploration_rate = 0
 
     environment.reset()
     agent.position = [0, 0]
@@ -58,5 +58,5 @@ def test_trained_agent_finds_food():
             break
 
     assert found_food is True
-    assert agent.position == [7, 7]
+    assert tuple(agent.position) in environment.foods
     assert reward == 10

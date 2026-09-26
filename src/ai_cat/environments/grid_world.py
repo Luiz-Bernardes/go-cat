@@ -11,6 +11,8 @@ class Environment:
 
         self.foods = {
             (7, 7),
+            (2, 6),
+            (8, 2),
         }
 
         self.obstacles = {

@@ -10,17 +10,21 @@ def test_environment_initial_position():
 def test_environment_initial_food_position():
     environment = Environment()
 
-    assert environment.foods == {(7, 7)}
+    assert environment.foods == {
+        (7, 7),
+        (2, 6),
+        (8, 2),
+    }
 
 def test_environment_supports_multiple_foods():
     environment = Environment()
 
     environment.foods.add((2, 2))
 
-    assert environment.foods == {
-        (7, 7),
-        (2, 2),
-    }
+    assert (7, 7) in environment.foods
+    assert (2, 6) in environment.foods
+    assert (8, 2) in environment.foods
+    assert (2, 2) in environment.foods
 
 def test_environment_reaches_any_food():
     environment = Environment()
