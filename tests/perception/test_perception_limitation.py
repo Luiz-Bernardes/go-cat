@@ -91,14 +91,6 @@ def test_same_perception_requires_opposite_actions():
     print("Ação correta em A: right")
     print("Ação correta em B: left")
 
-    assert action_a == "right"
-
-    # Aqui está o ponto do experimento:
-    #
-    # A e B possuem exatamente o mesmo estado perceptivo.
-    # Portanto, o agente necessariamente consulta a mesma
-    # entrada da Q-table nos dois casos.
-    #
-    # Consequentemente, ele não consegue escolher "right"
-    # em A e "left" em B.
-    assert action_b != "left"
+    # Como as duas situações possuem exatamente a mesma percepção,
+    # o agente recebe o mesmo estado e não consegue diferenciá-las.
+    assert action_a == action_b
