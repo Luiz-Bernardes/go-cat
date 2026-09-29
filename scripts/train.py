@@ -11,9 +11,13 @@ max_steps = 100
 for episode in range(episodes):
     environment.reset()
     agent.position = [0, 0]
+    agent.memory.reset()
+
+    # Primeira observação do episódio.
+    agent.observe(environment)
 
     for step in range(max_steps):
-        state = agent.get_state(environment)
+        state = agent.get_state()
 
         action = agent.choose_action(state)
 
@@ -21,7 +25,10 @@ for episode in range(episodes):
 
         agent.position = list(environment.cat_position)
 
-        next_state = agent.get_state(environment)
+        # Nova observação após a ação.
+        agent.observe(environment)
+
+        next_state = agent.get_state()
 
         agent.learn(
             state,

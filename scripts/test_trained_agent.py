@@ -37,9 +37,13 @@ def test_trained_agent_finds_food_without_crossing_obstacles():
         configure_experiment_environment(environment)
 
         agent.position = [0, 0]
+        agent.memory.reset()
+
+        # Primeira percepção do episódio.
+        agent.observe(environment)
 
         for _ in range(max_steps):
-            state = agent.get_state(environment)
+            state = agent.get_state()
 
             action = agent.choose_action(state)
 
@@ -47,7 +51,10 @@ def test_trained_agent_finds_food_without_crossing_obstacles():
 
             agent.position = list(environment.cat_position)
 
-            next_state = agent.get_state(environment)
+            # Nova percepção após a ação.
+            agent.observe(environment)
+
+            next_state = agent.get_state()
 
             agent.learn(
                 state,
@@ -66,12 +73,17 @@ def test_trained_agent_finds_food_without_crossing_obstacles():
 
     environment.reset()
     configure_experiment_environment(environment)
+
     agent.position = [0, 0]
+    agent.memory.reset()
+
+    # Primeira percepção da avaliação.
+    agent.observe(environment)
 
     print("\nCaminho aprendido:\n")
 
     for step in range(max_steps):
-        state = agent.get_state(environment)
+        state = agent.get_state()
 
         action = agent.choose_action(state)
 
@@ -87,6 +99,9 @@ def test_trained_agent_finds_food_without_crossing_obstacles():
 
         if done:
             break
+
+        # Observa o ambiente após a ação.
+        agent.observe(environment)
 
     print("\nResultado:")
     print(f"Comida encontrada: {tuple(agent.position)}")

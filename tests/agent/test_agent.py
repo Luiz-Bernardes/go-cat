@@ -21,15 +21,34 @@ def test_agent_starts_with_empty_q_table():
 
     assert agent.learning.q_table == {}
 
-def test_agent_gets_state_from_environment():
+
+def test_agent_gets_state_from_memory():
     environment = Environment()
     agent = Agent()
 
     environment.cat_position = [2, 1]
 
-    state = agent.get_state(environment)
+    agent.observe(environment)
+
+    state = agent.get_state()
 
     assert state == (
-        (2, 1),
-        ("empty", "empty", "empty", "obstacle"),
+        (
+            "unknown",
+            "unknown",
+            "unknown",
+            "unknown",
+        ),
+        (
+            "unknown",
+            "unknown",
+            "unknown",
+            "unknown",
+        ),
+        (
+            "empty",
+            "empty",
+            "empty",
+            "obstacle",
+        ),
     )

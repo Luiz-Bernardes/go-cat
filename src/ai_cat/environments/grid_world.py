@@ -87,19 +87,6 @@ class Environment:
             perception["right"],
         )
 
-    def get_state(self):
-        perception = self.get_perception()
-
-        return (
-            tuple(self.cat_position),
-            (
-                perception["up"],
-                perception["down"],
-                perception["left"],
-                perception["right"],
-            ),
-        )
-
     def display(self):
         for y in range(self.size):
             row = ""
