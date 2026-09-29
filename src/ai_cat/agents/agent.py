@@ -1,8 +1,11 @@
 from ai_cat.learning.q_learning import QLearning
+from ai_cat.memory.memory import Memory
 
 class Agent:
     def __init__(self):
         self.position = [0, 0]
+
+        self.memory = Memory(capacity=3)
 
         self.actions = [
             "up",
