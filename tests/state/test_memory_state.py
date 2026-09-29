@@ -1,44 +1,20 @@
 from ai_cat.environments.grid_world import Environment
+from ai_cat.learning.state import State
 from ai_cat.memory.memory import Memory
-
-UNKNOWN = (
-    "unknown",
-    "unknown",
-    "unknown",
-    "unknown",
-)
-
-def perception_to_state(perception):
-    return (
-        perception["up"],
-        perception["down"],
-        perception["left"],
-        perception["right"],
-    )
 
 
 def variable_length_state(memory):
     return tuple(
-        perception_to_state(perception)
+        State.perception_to_state(perception)
         for perception in memory.get()
     )
-
-
-def fixed_length_state(memory, capacity):
-    items = [
-        perception_to_state(perception)
-        for perception in memory.get()
-    ]
-
-    padding = [UNKNOWN] * (capacity - len(items))
-
-    return tuple(padding + items)
 
 
 def test_memory_state_representations():
 
     environment = Environment()
     memory = Memory(capacity=3)
+    state_builder = State(memory, capacity=3)
 
     print()
 
@@ -47,7 +23,7 @@ def test_memory_state_representations():
     memory.add(perception)
 
     variable_state = variable_length_state(memory)
-    fixed_state = fixed_length_state(memory, 3)
+    fixed_state = state_builder.build()
 
     print("Após P1:")
     print("Memória:", memory.get())
@@ -65,7 +41,7 @@ def test_memory_state_representations():
     memory.add(perception)
 
     variable_state = variable_length_state(memory)
-    fixed_state = fixed_length_state(memory, 3)
+    fixed_state = state_builder.build()
 
     print()
     print("Após P2:")
@@ -83,7 +59,7 @@ def test_memory_state_representations():
     memory.add(perception)
 
     variable_state = variable_length_state(memory)
-    fixed_state = fixed_length_state(memory, 3)
+    fixed_state = state_builder.build()
 
     print()
     print("Após P3:")

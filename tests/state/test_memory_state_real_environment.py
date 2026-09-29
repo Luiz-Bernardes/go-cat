@@ -1,33 +1,7 @@
 from ai_cat.agents.agent import Agent
 from ai_cat.environments.grid_world import Environment
+from ai_cat.learning.state import State
 from ai_cat.memory.memory import Memory
-
-
-def perception_to_state(perception):
-    return (
-        perception["up"],
-        perception["down"],
-        perception["left"],
-        perception["right"],
-    )
-
-
-def build_memory_state(memory, capacity):
-    unknown = (
-        "unknown",
-        "unknown",
-        "unknown",
-        "unknown",
-    )
-
-    states = [
-        perception_to_state(perception)
-        for perception in memory.get()
-    ]
-
-    padding = [unknown] * (capacity - len(states))
-
-    return tuple(padding + states)
 
 
 def test_real_environment_memory_state_can_be_learned():
@@ -35,12 +9,13 @@ def test_real_environment_memory_state_can_be_learned():
     environment = Environment()
     memory = Memory(capacity=3)
     agent = Agent()
+    state_builder = State(memory, capacity=3)
 
     # Primeira percepção real do ambiente.
     perception = environment.get_perception()
     memory.add(perception)
 
-    state_1 = build_memory_state(memory, 3)
+    state_1 = state_builder.build()
 
     print()
     print("Percepção 1:")
@@ -56,7 +31,7 @@ def test_real_environment_memory_state_can_be_learned():
     perception = environment.get_perception()
     memory.add(perception)
 
-    state_2 = build_memory_state(memory, 3)
+    state_2 = state_builder.build()
 
     print()
     print("Percepção 2:")
@@ -72,7 +47,7 @@ def test_real_environment_memory_state_can_be_learned():
     perception = environment.get_perception()
     memory.add(perception)
 
-    state_3 = build_memory_state(memory, 3)
+    state_3 = state_builder.build()
 
     print()
     print("Percepção 3:")
