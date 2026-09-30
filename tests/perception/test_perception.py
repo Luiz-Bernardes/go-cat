@@ -1,3 +1,7 @@
+from dataclasses import FrozenInstanceError
+
+import pytest
+
 from ai_cat.perception.perception import Perception
 
 
@@ -50,3 +54,27 @@ def test_equal_perceptions_are_equal():
     )
 
     assert perception_a == perception_b
+
+def test_perception_is_immutable():
+
+    perception = Perception(
+        up="wall",
+        down="empty",
+        left="wall",
+        right="food",
+    )
+
+    with pytest.raises(FrozenInstanceError):
+        perception.up = "food"
+
+
+def test_perception_is_hashable():
+
+    perception = Perception(
+        up="wall",
+        down="empty",
+        left="wall",
+        right="food",
+    )
+
+    assert isinstance(hash(perception), int)
