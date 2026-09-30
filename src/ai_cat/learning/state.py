@@ -24,9 +24,4 @@ class State:
 
     @staticmethod
     def perception_to_state(perception):
-        return (
-            perception["up"],
-            perception["down"],
-            perception["left"],
-            perception["right"],
-        )
+        return perception.as_tuple()

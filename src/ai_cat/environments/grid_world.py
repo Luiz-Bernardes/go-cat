@@ -1,5 +1,6 @@
 import numpy as np
 
+from ai_cat.perception.perception import Perception
 
 class Environment:
     def __init__(self, size=10):
@@ -60,32 +61,30 @@ class Environment:
             "right": (x + 1, y),
         }
 
-        perception = {}
+        values = {}
 
         for direction, (px, py) in positions.items():
             if px < 0 or px >= self.size or py < 0 or py >= self.size:
-                perception[direction] = "wall"
+                values[direction] = "wall"
 
             elif (px, py) in self.obstacles:
-                perception[direction] = "obstacle"
+                values[direction] = "obstacle"
 
             elif (px, py) in self.foods:
-                perception[direction] = "food"
+                values[direction] = "food"
 
             else:
-                perception[direction] = "empty"
+                values[direction] = "empty"
 
-        return perception
+        return Perception(
+            up=values["up"],
+            down=values["down"],
+            left=values["left"],
+            right=values["right"],
+        )
 
     def get_perception_state(self):
-        perception = self.get_perception()
-
-        return (
-            perception["up"],
-            perception["down"],
-            perception["left"],
-            perception["right"],
-        )
+        return self.get_perception().as_tuple()
 
     def display(self):
         for y in range(self.size):

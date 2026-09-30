@@ -1,4 +1,5 @@
 from ai_cat.agents.agent import Agent
+from ai_cat.perception.perception import Perception
 
 
 def test_agent_has_memory():
@@ -13,12 +14,12 @@ def test_agent_memory_stores_perceptions():
 
     agent = Agent()
 
-    perception = {
-        "up": "wall",
-        "down": "empty",
-        "left": "wall",
-        "right": "empty",
-    }
+    perception = Perception(
+        up="wall",
+        down="empty",
+        left="wall",
+        right="empty",
+    )
 
     agent.memory.add(perception)
 

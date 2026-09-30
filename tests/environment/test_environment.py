@@ -90,12 +90,12 @@ def test_environment_returns_cat_perception():
 
     perception = environment.get_perception()
 
-    assert perception == {
-        "up": "empty",
-        "down": "empty",
-        "left": "empty",
-        "right": "obstacle",
-    }
+    assert perception.as_tuple() == (
+        "empty",
+        "empty",
+        "empty",
+        "obstacle",
+    )
 
 def test_environment_returns_perception_state():
     environment = Environment()
