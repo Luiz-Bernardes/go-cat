@@ -7,13 +7,18 @@ class State:
     )
 
     def __init__(self, memory, capacity):
+        if capacity <= 0:
+            raise ValueError("State capacity must be greater than zero")
+
         self.memory = memory
         self.capacity = capacity
 
     def build(self):
+        perceptions = self.memory.get()
+
         states = [
             self.perception_to_state(perception)
-            for perception in self.memory.get()
+            for perception in perceptions[-self.capacity:]
         ]
 
         padding = [

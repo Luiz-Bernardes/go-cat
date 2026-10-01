@@ -1,3 +1,4 @@
+import pytest
 from ai_cat.environments.grid_world import Environment
 from ai_cat.learning.state import State
 from ai_cat.memory.memory import Memory
@@ -88,3 +89,70 @@ def test_state_is_hashable():
     result = state.build()
 
     hash(result)
+
+
+def test_state_represents_empty_memory():
+
+    memory = Memory(capacity=3)
+
+    state = State(memory, capacity=3)
+
+    result = state.build()
+
+    assert result == (
+        State.UNKNOWN,
+        State.UNKNOWN,
+        State.UNKNOWN,
+    )
+
+
+def test_state_has_exactly_capacity_elements():
+
+    memory = Memory(capacity=5)
+
+    environment = Environment()
+
+    for _ in range(5):
+        memory.add(
+            environment.get_perception()
+        )
+
+    state = State(memory, capacity=3)
+
+    result = state.build()
+
+    assert len(result) == 3
+
+
+def test_state_rejects_invalid_capacity():
+
+    memory = Memory(capacity=3)
+
+    with pytest.raises(ValueError):
+        State(memory, capacity=0)
+
+    with pytest.raises(ValueError):
+        State(memory, capacity=-1)
+
+def test_unknown_is_not_a_perception_type():
+
+    assert not any(
+        isinstance(value, PerceptionType)
+        for value in State.UNKNOWN
+    )
+
+def test_state_build_is_deterministic():
+
+    environment = Environment()
+    memory = Memory(capacity=3)
+
+    memory.add(
+        environment.get_perception()
+    )
+
+    state = State(memory, capacity=3)
+
+    first = state.build()
+    second = state.build()
+
+    assert first == second

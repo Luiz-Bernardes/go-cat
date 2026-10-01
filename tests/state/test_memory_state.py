@@ -16,19 +16,12 @@ def test_memory_state_representations():
     memory = Memory(capacity=3)
     state_builder = State(memory, capacity=3)
 
-    print()
-
     # P1
     perception = environment.get_perception()
     memory.add(perception)
 
     variable_state = variable_length_state(memory)
     fixed_state = state_builder.build()
-
-    print("Após P1:")
-    print("Memória:", memory.get())
-    print("Estado variável:", variable_state)
-    print("Estado fixo:", fixed_state)
 
     assert len(variable_state) == 1
     assert len(fixed_state) == 3
@@ -43,11 +36,6 @@ def test_memory_state_representations():
     variable_state = variable_length_state(memory)
     fixed_state = state_builder.build()
 
-    print()
-    print("Após P2:")
-    print("Estado variável:", variable_state)
-    print("Estado fixo:", fixed_state)
-
     assert len(variable_state) == 2
     assert len(fixed_state) == 3
 
@@ -61,13 +49,7 @@ def test_memory_state_representations():
     variable_state = variable_length_state(memory)
     fixed_state = state_builder.build()
 
-    print()
-    print("Após P3:")
-    print("Estado variável:", variable_state)
-    print("Estado fixo:", fixed_state)
-
     assert len(variable_state) == 3
     assert len(fixed_state) == 3
 
-    # Quando a memória está cheia, as duas representações coincidem.
     assert variable_state == fixed_state
