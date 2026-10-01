@@ -1,5 +1,6 @@
 import numpy as np
 from ai_cat.environments.grid_world import Environment
+from ai_cat.perception.perception import Perception, PerceptionType
 
 def test_environment_initial_position():
     environment = Environment()
@@ -91,10 +92,10 @@ def test_environment_returns_cat_perception():
     perception = environment.get_perception()
 
     assert perception.as_tuple() == (
-        "empty",
-        "empty",
-        "empty",
-        "obstacle",
+        PerceptionType.EMPTY,
+        PerceptionType.EMPTY,
+        PerceptionType.EMPTY,
+        PerceptionType.OBSTACLE,
     )
 
 def test_environment_returns_perception_state():
@@ -105,8 +106,8 @@ def test_environment_returns_perception_state():
     state = environment.get_perception_state()
 
     assert state == (
-        "empty",
-        "empty",
-        "empty",
-        "obstacle",
+        PerceptionType.EMPTY,
+        PerceptionType.EMPTY,
+        PerceptionType.EMPTY,
+        PerceptionType.OBSTACLE,
     )

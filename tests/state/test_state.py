@@ -1,6 +1,7 @@
 from ai_cat.environments.grid_world import Environment
 from ai_cat.learning.state import State
 from ai_cat.memory.memory import Memory
+from ai_cat.perception.perception import PerceptionType
 
 
 def test_state_represents_incomplete_memory():
@@ -16,10 +17,10 @@ def test_state_represents_incomplete_memory():
     result = state.build()
 
     expected_perception = (
-        "wall",
-        "empty",
-        "wall",
-        "empty",
+        PerceptionType.WALL,
+        PerceptionType.EMPTY,
+        PerceptionType.WALL,
+        PerceptionType.EMPTY,
     )
 
     expected = (
@@ -53,22 +54,22 @@ def test_state_represents_complete_memory():
 
     assert result == (
         (
-            "wall",
-            "empty",
-            "wall",
-            "empty",
+            PerceptionType.WALL,
+            PerceptionType.EMPTY,
+            PerceptionType.WALL,
+            PerceptionType.EMPTY,
         ),
         (
-            "empty",
-            "empty",
-            "wall",
-            "empty",
+            PerceptionType.EMPTY,
+            PerceptionType.EMPTY,
+            PerceptionType.WALL,
+            PerceptionType.EMPTY,
         ),
         (
-            "empty",
-            "empty",
-            "wall",
-            "empty",
+            PerceptionType.EMPTY,
+            PerceptionType.EMPTY,
+            PerceptionType.WALL,
+            PerceptionType.EMPTY,
         ),
     )
 

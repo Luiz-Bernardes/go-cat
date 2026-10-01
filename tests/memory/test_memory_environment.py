@@ -1,6 +1,6 @@
 from ai_cat.environments.grid_world import Environment
 from ai_cat.memory.memory import Memory
-from ai_cat.perception.perception import Perception
+from ai_cat.perception.perception import Perception, PerceptionType
 
 
 def test_memory_stores_real_environment_perceptions():
@@ -43,24 +43,24 @@ def test_memory_stores_real_environment_perceptions():
 
     # Primeira percepção
     assert stored_perceptions[0] == Perception(
-        up="wall",
-        down="empty",
-        left="wall",
-        right="empty",
+        up=PerceptionType.WALL,
+        down=PerceptionType.EMPTY,
+        left=PerceptionType.WALL,
+        right=PerceptionType.EMPTY,
     )
 
     # Segunda percepção
     assert stored_perceptions[1] == Perception(
-        up="empty",
-        down="empty",
-        left="wall",
-        right="empty",
+        up=PerceptionType.EMPTY,
+        down=PerceptionType.EMPTY,
+        left=PerceptionType.WALL,
+        right=PerceptionType.EMPTY,
     )
 
     # Terceira percepção
     assert stored_perceptions[2] == Perception(
-        up="empty",
-        down="empty",
-        left="wall",
-        right="empty",
+        up=PerceptionType.EMPTY,
+        down=PerceptionType.EMPTY,
+        left=PerceptionType.WALL,
+        right=PerceptionType.EMPTY,
     )

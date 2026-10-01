@@ -1,4 +1,5 @@
 from ai_cat.agents.agent import Agent
+from ai_cat.perception.perception import PerceptionType
 
 def build_memory(sequence, size):
     return tuple(sequence[-size:])
@@ -7,24 +8,24 @@ def test_minimum_memory_length():
     agent = Agent()
 
     empty = (
-        "empty",
-        "empty",
-        "empty",
-        "empty",
+        PerceptionType.EMPTY,
+        PerceptionType.EMPTY,
+        PerceptionType.EMPTY,
+        PerceptionType.EMPTY,
     )
 
     signal_right = (
-        "empty",
-        "empty",
-        "empty",
-        "food",
+        PerceptionType.EMPTY,
+        PerceptionType.EMPTY,
+        PerceptionType.EMPTY,
+        PerceptionType.FOOD,
     )
 
     signal_left = (
-        "empty",
-        "empty",
-        "food",
-        "empty",
+        PerceptionType.EMPTY,
+        PerceptionType.EMPTY,
+        PerceptionType.FOOD,
+        PerceptionType.EMPTY,
     )
 
     # As duas situações possuem o mesmo final.

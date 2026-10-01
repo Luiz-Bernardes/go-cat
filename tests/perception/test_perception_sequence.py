@@ -1,27 +1,28 @@
 from ai_cat.agents.agent import Agent
+from ai_cat.perception.perception import PerceptionType
 
 def test_sequence_contains_information_missing_from_current_perception():
     agent = Agent()
 
     empty = (
-        "empty",
-        "empty",
-        "empty",
-        "empty",
+        PerceptionType.EMPTY,
+        PerceptionType.EMPTY,
+        PerceptionType.EMPTY,
+        PerceptionType.EMPTY,
     )
 
     food_right = (
-        "empty",
-        "empty",
-        "empty",
-        "food",
+        PerceptionType.EMPTY,
+        PerceptionType.EMPTY,
+        PerceptionType.EMPTY,
+        PerceptionType.FOOD,
     )
 
     food_left = (
-        "empty",
-        "empty",
-        "food",
-        "empty",
+        PerceptionType.EMPTY,
+        PerceptionType.EMPTY,
+        PerceptionType.FOOD,
+        PerceptionType.EMPTY,
     )
 
     # Sequência A:

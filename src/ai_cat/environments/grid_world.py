@@ -1,6 +1,6 @@
 import numpy as np
 
-from ai_cat.perception.perception import Perception
+from ai_cat.perception.perception import Perception, PerceptionType
 
 class Environment:
     def __init__(self, size=10):
@@ -65,16 +65,16 @@ class Environment:
 
         for direction, (px, py) in positions.items():
             if px < 0 or px >= self.size or py < 0 or py >= self.size:
-                values[direction] = "wall"
+                values[direction] = PerceptionType.WALL
 
             elif (px, py) in self.obstacles:
-                values[direction] = "obstacle"
+                values[direction] = PerceptionType.OBSTACLE
 
             elif (px, py) in self.foods:
-                values[direction] = "food"
+                values[direction] = PerceptionType.FOOD
 
             else:
-                values[direction] = "empty"
+                values[direction] = PerceptionType.EMPTY
 
         return Perception(
             up=values["up"],

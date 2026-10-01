@@ -1,5 +1,6 @@
 from ai_cat.agents.agent import Agent
 from ai_cat.environments.grid_world import Environment
+from ai_cat.perception.perception import PerceptionType
 
 def test_agent_creates_q_values_for_new_state():
     agent = Agent()
@@ -46,9 +47,9 @@ def test_agent_gets_state_from_memory():
             "unknown",
         ),
         (
-            "empty",
-            "empty",
-            "empty",
-            "obstacle",
+            PerceptionType.EMPTY,
+            PerceptionType.EMPTY,
+            PerceptionType.EMPTY,
+            PerceptionType.OBSTACLE,
         ),
     )

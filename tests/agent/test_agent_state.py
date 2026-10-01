@@ -1,6 +1,6 @@
 from ai_cat.agents.agent import Agent
 from ai_cat.environments.grid_world import Environment
-
+from ai_cat.perception.perception import PerceptionType
 
 def test_agent_builds_state_from_memory():
 
@@ -27,10 +27,10 @@ def test_agent_builds_state_from_memory():
             "unknown",
         ),
         (
-            "wall",
-            "empty",
-            "wall",
-            "empty",
+            PerceptionType.WALL,
+            PerceptionType.EMPTY,
+            PerceptionType.WALL,
+            PerceptionType.EMPTY,
         ),
     )
 

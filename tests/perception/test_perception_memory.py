@@ -1,27 +1,28 @@
 from ai_cat.agents.agent import Agent
+from ai_cat.perception.perception import PerceptionType
 
 def test_memory_allows_different_actions_for_same_perception():
     agent = Agent()
 
     current_perception = (
-        "empty",
-        "empty",
-        "empty",
-        "empty",
+        PerceptionType.EMPTY,
+        PerceptionType.EMPTY,
+        PerceptionType.EMPTY,
+        PerceptionType.EMPTY,
     )
 
     previous_perception_a = (
-        "wall",
-        "empty",
-        "wall",
-        "empty",
+        PerceptionType.WALL,
+        PerceptionType.EMPTY,
+        PerceptionType.WALL,
+        PerceptionType.EMPTY,
     )
 
     previous_perception_b = (
-        "wall",
-        "empty",
-        "empty",
-        "wall",
+        PerceptionType.WALL,
+        PerceptionType.EMPTY,
+        PerceptionType.EMPTY,
+        PerceptionType.WALL,
     )
 
     state_a = (
