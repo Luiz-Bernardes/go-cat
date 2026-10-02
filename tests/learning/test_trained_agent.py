@@ -25,18 +25,22 @@ def test_trained_agent_finds_food():
     # Treinamento
     for _ in range(episodes):
         environment.reset()
-        agent.position = [0, 0]
+        agent.memory.reset()
+        agent.observe(environment)
 
         for _ in range(max_steps):
-            state = tuple(agent.position)
+            state = agent.get_state()
 
             action = agent.choose_action(state)
 
             reward, done = environment.step(action)
 
-            agent.position = list(environment.cat_position)
+            agent.observe(environment)
+            next_state = agent.get_state()
+            
+            agent.observe(environment)
 
-            next_state = tuple(agent.position)
+            next_state = agent.get_state()
 
             agent.learn(
                 state,
@@ -54,25 +58,26 @@ def test_trained_agent_finds_food():
     agent.learning.exploration_rate = 0
 
     environment.reset()
-    agent.position = [0, 0]
+    agent.memory.reset()
+    agent.observe(environment)
 
     found_food = False
 
     for _ in range(max_steps):
-        state = tuple(agent.position)
+        state = agent.get_state()
 
         action = agent.choose_action(state)
 
         reward, done = environment.step(action)
 
-        agent.position = list(environment.cat_position)
-
         if done:
             found_food = True
             break
 
+        agent.observe(environment)
+
     assert found_food is True
-    assert tuple(agent.position) in environment.foods
+    assert tuple(environment.cat_position) in environment.foods
     assert reward == 10
 
 def test_trained_agent_finds_shortest_path_to_food():
@@ -80,6 +85,7 @@ def test_trained_agent_finds_shortest_path_to_food():
 
     environment = Environment()
     agent = Agent()
+    agent.state.capacity = 3
 
     episodes = 1000
     max_steps = 100
@@ -89,18 +95,24 @@ def test_trained_agent_finds_shortest_path_to_food():
         environment.reset()
         configure_experiment_environment(environment)
 
-        agent.position = [0, 0]
+        agent.memory.reset()
+        agent.observe(environment)
 
         for _ in range(max_steps):
-            state = tuple(agent.position)
+            state = agent.get_state()
 
             action = agent.choose_action(state)
 
+            old_position = tuple(environment.cat_position)
+
             reward, done = environment.step(action)
 
-            agent.position = list(environment.cat_position)
+            new_position = tuple(environment.cat_position)
 
-            next_state = tuple(agent.position)
+            if new_position != old_position:
+                agent.observe(environment)
+
+            next_state = agent.get_state()
 
             agent.learn(
                 state,
@@ -120,24 +132,42 @@ def test_trained_agent_finds_shortest_path_to_food():
     environment.reset()
     configure_experiment_environment(environment)
 
-    agent.position = [0, 0]
+    agent.memory.reset()
+    agent.observe(environment)
 
     path = []
 
     for _ in range(max_steps):
-        state = tuple(agent.position)
+        state = agent.get_state()
+
+        perception = environment.get_perception()
+        q_values = agent.get_q_values(state)
 
         action = agent.choose_action(state)
 
+        old_position = tuple(environment.cat_position)
+
         reward, done = environment.step(action)
 
-        agent.position = list(environment.cat_position)
+        new_position = tuple(environment.cat_position)
 
-        path.append(tuple(agent.position))
+        path.append(new_position)
+
+        print(
+            f"{len(path):02d} | "
+            f"{action:5} | "
+            f"pos={tuple(environment.cat_position)} | "
+            f"state={state} | "
+            f"perception={perception} | "
+            f"Q={q_values}"
+        )
 
         if done:
             break
 
-    assert tuple(agent.position) == (0, 5)
+        if new_position != old_position:
+            agent.observe(environment)
+
+    assert tuple(environment.cat_position) == (0, 5)
     assert len(path) == 5
     assert reward == 10
