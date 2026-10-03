@@ -4,8 +4,6 @@ from ai_cat.learning.state import State
 
 class Agent:
     def __init__(self):
-        self.position = [0, 0]
-
         self.memory = Memory(capacity=3)
 
         self.state = State(

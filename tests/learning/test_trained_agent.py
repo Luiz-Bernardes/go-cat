@@ -38,10 +38,6 @@ def test_trained_agent_finds_food():
             agent.observe(environment)
             next_state = agent.get_state()
             
-            agent.observe(environment)
-
-            next_state = agent.get_state()
-
             agent.learn(
                 state,
                 action,
