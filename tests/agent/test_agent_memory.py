@@ -76,3 +76,12 @@ def test_agent_reset_memory():
 
     assert len(agent.memory) == 0
     assert len(agent.spatial_memory) == 0
+
+def test_agent_can_check_visited_position():
+    agent = Agent()
+    environment = Environment()
+
+    agent.observe(environment)
+
+    assert agent.spatial_memory.contains((0, 0))
+    assert not agent.spatial_memory.contains((0, 1))

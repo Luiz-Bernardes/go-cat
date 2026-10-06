@@ -16,3 +16,18 @@ class SpatialMemory:
 
     def __len__(self):
         return len(self._positions)
+
+    def observe_position(self, position):
+        x, y = position
+
+        positions = {
+            "up": (x, y - 1),
+            "down": (x, y + 1),
+            "left": (x - 1, y),
+            "right": (x + 1, y),
+        }
+
+        return {
+            direction: self.contains(neighbor)
+            for direction, neighbor in positions.items()
+        }
