@@ -1,3 +1,5 @@
+from ai_cat.memory.spatial_observation import SpatialObservation
+
 class SpatialMemory:
     def __init__(self):
         self._positions = set()
@@ -20,14 +22,9 @@ class SpatialMemory:
     def observe_position(self, position):
         x, y = position
 
-        positions = {
-            "up": (x, y - 1),
-            "down": (x, y + 1),
-            "left": (x - 1, y),
-            "right": (x + 1, y),
-        }
-
-        return {
-            direction: self.contains(neighbor)
-            for direction, neighbor in positions.items()
-        }
+        return SpatialObservation(
+            up_visited=self.contains((x, y - 1)),
+            down_visited=self.contains((x, y + 1)),
+            left_visited=self.contains((x - 1, y)),
+            right_visited=self.contains((x + 1, y)),
+        )

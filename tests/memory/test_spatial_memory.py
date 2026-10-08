@@ -60,7 +60,7 @@ def test_spatial_memory_observes_visited_directions():
 
     observation = memory.observe_position((0, 1))
 
-    assert observation["up"] is True
-    assert observation["down"] is False
-    assert observation["left"] is False
-    assert observation["right"] is False
+    assert observation.up_visited is True
+    assert observation.down_visited is False
+    assert observation.left_visited is False
+    assert observation.right_visited is False
