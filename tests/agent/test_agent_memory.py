@@ -85,3 +85,19 @@ def test_agent_can_check_visited_position():
 
     assert agent.spatial_memory.contains((0, 0))
     assert not agent.spatial_memory.contains((0, 1))
+
+def test_agent_observes_spatial_memory():
+    agent = Agent()
+    environment = Environment()
+
+    agent.observe(environment)
+
+    environment.step("down")
+    agent.observe(environment)
+
+    observation = agent.observe_spatially(environment)
+
+    assert observation.up_visited is True
+    assert observation.down_visited is False
+    assert observation.left_visited is False
+    assert observation.right_visited is False

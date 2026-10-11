@@ -51,3 +51,8 @@ class Agent:
     def reset_memory(self):
         self.memory.reset()
         self.spatial_memory.reset()
+
+    def observe_spatially(self, environment):
+        return self.spatial_memory.observe_position(
+            environment.cat_position
+        )
