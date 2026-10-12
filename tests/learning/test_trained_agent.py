@@ -25,18 +25,18 @@ def test_trained_agent_finds_food():
     # Treinamento
     for _ in range(episodes):
         environment.reset()
-        agent.memory.reset()
+        agent.reset_memory()
         agent.observe(environment)
 
         for _ in range(max_steps):
-            state = agent.get_state()
+            state = agent.get_state(environment)
 
             action = agent.choose_action(state)
 
             reward, done = environment.step(action)
 
             agent.observe(environment)
-            next_state = agent.get_state()
+            next_state = agent.get_state(environment)
             
             agent.learn(
                 state,
@@ -54,13 +54,13 @@ def test_trained_agent_finds_food():
     agent.learning.exploration_rate = 0
 
     environment.reset()
-    agent.memory.reset()
+    agent.reset_memory()
     agent.observe(environment)
 
     found_food = False
 
     for _ in range(max_steps):
-        state = agent.get_state()
+        state = agent.get_state(environment)
 
         action = agent.choose_action(state)
 
@@ -91,11 +91,11 @@ def test_trained_agent_finds_shortest_path_to_food():
         environment.reset()
         configure_experiment_environment(environment)
 
-        agent.memory.reset()
+        agent.reset_memory()
         agent.observe(environment)
 
         for _ in range(max_steps):
-            state = agent.get_state()
+            state = agent.get_state(environment)
 
             action = agent.choose_action(state)
 
@@ -108,7 +108,7 @@ def test_trained_agent_finds_shortest_path_to_food():
             if new_position != old_position:
                 agent.observe(environment)
 
-            next_state = agent.get_state()
+            next_state = agent.get_state(environment)
 
             agent.learn(
                 state,
@@ -128,13 +128,13 @@ def test_trained_agent_finds_shortest_path_to_food():
     environment.reset()
     configure_experiment_environment(environment)
 
-    agent.memory.reset()
+    agent.reset_memory()
     agent.observe(environment)
 
     path = []
 
     for _ in range(max_steps):
-        state = agent.get_state()
+        state = agent.get_state(environment)
 
         perception = environment.get_perception()
         q_values = agent.get_q_values(state)

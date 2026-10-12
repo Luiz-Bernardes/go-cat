@@ -13,7 +13,7 @@ class State:
         self.memory = memory
         self.capacity = capacity
 
-    def build(self):
+    def build(self, spatial_observation=None):
         perceptions = self.memory.get()
 
         states = [
@@ -25,7 +25,15 @@ class State:
             self.UNKNOWN
         ] * (self.capacity - len(states))
 
-        return tuple(padding + states)
+        state = tuple(padding + states)
+
+        if spatial_observation is None:
+            return state
+
+        return (
+            state,
+            spatial_observation.as_tuple(),
+        )
 
     @staticmethod
     def perception_to_state(perception):

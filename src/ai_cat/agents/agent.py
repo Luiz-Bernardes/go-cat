@@ -25,8 +25,15 @@ class Agent:
     def get_q_values(self, state):
         return self.learning.get_q_values(state)
 
-    def get_state(self):
-        return self.state.build()
+    def get_state(self, environment=None):
+        if environment is None:
+            return self.state.build()
+
+        spatial_observation = self.observe_spatially(environment)
+
+        return self.state.build(
+            spatial_observation=spatial_observation
+        )
 
     def choose_action(self, state):
         return self.learning.choose_action(state)

@@ -57,3 +57,24 @@ def test_agent_state_changes_as_memory_grows():
     assert len(state_1) == 3
     assert len(state_2) == 3
     assert len(state_3) == 3
+
+
+def test_agent_state_includes_spatial_observation():
+    agent = Agent()
+    environment = Environment()
+
+    agent.observe(environment)
+    environment.step("down")
+    agent.observe(environment)
+
+    state = agent.get_state(environment)
+
+    perception_history, spatial_observation = state
+
+    assert len(perception_history) == 3
+    assert spatial_observation == (
+        True,
+        False,
+        False,
+        False,
+    )
