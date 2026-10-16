@@ -1,5 +1,6 @@
 from ai_cat.agents.agent import Agent
 from ai_cat.environments.grid_world import Environment
+from ai_cat.perception.perception import PerceptionType
 
 def test_detects_repeated_positions():
     path = [
@@ -75,7 +76,7 @@ def test_detects_movement_cycle():
     assert has_cycle is True
 
 
-def test_agent_can_get_stuck_against_wall():
+def test_agent_avoids_wall_when_choosing_action():
     environment = Environment()
     agent = Agent()
 
@@ -87,21 +88,19 @@ def test_agent_can_get_stuck_against_wall():
     agent.reset_memory()
     agent.observe(environment)
 
-    initial_position = tuple(environment.cat_position)
-    path = []
+    state = agent.get_state(environment)
+    action = agent.choose_action(state)
 
-    for _ in range(10):
-        state = agent.get_state(environment)
-        action = agent.choose_action(state)
+    perception = environment.get_perception()
 
-        environment.step(action)
+    directions = {
+        "up": perception.up,
+        "down": perception.down,
+        "left": perception.left,
+        "right": perception.right,
+    }
 
-        position = tuple(environment.cat_position)
-        path.append(position)
-
-        agent.observe(environment)
-
-    assert all(
-        position == initial_position
-        for position in path
+    assert directions[action] not in (
+        PerceptionType.WALL,
+        PerceptionType.OBSTACLE,
     )

@@ -1,7 +1,9 @@
+import random
 from ai_cat.learning.q_learning import QLearning
 from ai_cat.memory.memory import Memory
 from ai_cat.memory.spatial_memory import SpatialMemory
 from ai_cat.learning.state import State
+from ai_cat.perception.perception import PerceptionType
 
 class Agent:
     def __init__(self):
@@ -36,7 +38,42 @@ class Agent:
         )
 
     def choose_action(self, state):
-        return self.learning.choose_action(state)
+        if not self.memory.get():
+            return self.learning.choose_action(state)
+
+        perception = self.memory.get()[-1]
+
+        directions = {
+            "up": perception.up,
+            "down": perception.down,
+            "left": perception.left,
+            "right": perception.right,
+        }
+
+        valid_actions = [
+            action
+            for action, perception_type in directions.items()
+            if perception_type not in (
+                PerceptionType.WALL,
+                PerceptionType.OBSTACLE,
+            )
+        ]
+
+        if not valid_actions:
+            return self.learning.choose_action(state)
+
+        q_values = self.learning.get_q_values(state)
+
+        if (
+            random.random()
+            < self.learning.exploration_rate
+        ):
+            return random.choice(valid_actions)
+
+        return max(
+            valid_actions,
+            key=lambda action: q_values[action],
+        )
 
     def learn(self, state, action, reward, next_state):
         self.learning.learn(
