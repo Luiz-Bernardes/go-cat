@@ -104,3 +104,35 @@ def test_agent_avoids_wall_when_choosing_action():
         PerceptionType.WALL,
         PerceptionType.OBSTACLE,
     )
+
+
+def test_agent_avoids_recently_visited_position():
+    environment = Environment()
+    agent = Agent()
+
+    environment.foods = set()
+    environment.obstacles = set()
+
+    # Simula um histórico de posições visitadas.
+    agent.spatial_memory.add((0, 0))
+    agent.spatial_memory.add((0, 1))
+    agent.spatial_memory.add((1, 1))
+
+    # O agente está em (1, 0).
+    # A posição (0, 0) já foi visitada e fica à esquerda.
+    environment.cat_position = __import__("numpy").array([1, 0])
+
+    agent.reset_memory()
+    agent.spatial_memory.add((0, 0))
+    agent.spatial_memory.add((0, 1))
+    agent.spatial_memory.add((1, 1))
+    agent.spatial_memory.add((1, 0))
+
+    agent.observe(environment)
+
+    agent.learning.exploration_rate = 0
+
+    state = agent.get_state(environment)
+    action = agent.choose_action(state)
+
+    assert action != "left"
