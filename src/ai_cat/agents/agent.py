@@ -70,6 +70,24 @@ class Agent:
         ):
             return random.choice(valid_actions)
 
+        spatial_observation = state[1]
+
+        visited_directions = {
+            "up": spatial_observation[0],
+            "down": spatial_observation[1],
+            "left": spatial_observation[2],
+            "right": spatial_observation[3],
+        }
+
+        unvisited_actions = [
+            action
+            for action in valid_actions
+            if not visited_directions[action]
+        ]
+
+        if unvisited_actions:
+            valid_actions = unvisited_actions
+
         return max(
             valid_actions,
             key=lambda action: q_values[action],
