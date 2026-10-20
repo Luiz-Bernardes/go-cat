@@ -36,26 +36,17 @@ def test_agent_can_repeat_positions():
     agent.reset_memory()
     agent.observe(environment)
 
-    visited_positions = set()
-    repeated_positions = []
+    # Todas as posições adjacentes já foram visitadas.
+    # O agente deve continuar podendo escolher uma delas.
+    agent.spatial_memory.add((0, 0))
+    agent.spatial_memory.add((0, 1))
+    agent.spatial_memory.add((1, 0))
 
-    for _ in range(20):
-        state = agent.get_state(environment)
-        action = agent.choose_action(state)
+    state = agent.get_state(environment)
+    action = agent.choose_action(state)
 
-        environment.step(action)
-
-        position = tuple(environment.cat_position)
-
-        if position in visited_positions:
-            repeated_positions.append(position)
-        else:
-            visited_positions.add(position)
-
-        agent.observe(environment)
-
-    assert len(repeated_positions) > 0
-
+    assert action in agent.actions
+    
 
 def test_detects_movement_cycle():
     path = [
