@@ -4,11 +4,13 @@ from ai_cat.memory.memory import Memory
 from ai_cat.memory.spatial_memory import SpatialMemory
 from ai_cat.learning.state import State
 from ai_cat.perception.perception import PerceptionType
+from ai_cat.memory.movement_history import MovementHistory
 
 class Agent:
     def __init__(self):
         self.memory = Memory(capacity=3)
         self.spatial_memory = SpatialMemory()
+        self.movement_history = MovementHistory(capacity=12)
 
         self.state = State(
             self.memory,
@@ -106,13 +108,16 @@ class Agent:
 
     def observe(self, environment):
         perception = environment.get_perception()
+        position = tuple(environment.cat_position)
 
         self.memory.add(perception)
-        self.spatial_memory.add(environment.cat_position)
+        self.spatial_memory.add(position)
+        self.movement_history.add(position)
 
     def reset_memory(self):
         self.memory.reset()
         self.spatial_memory.reset()
+        self.movement_history.reset()
 
     def observe_spatially(self, environment):
         return self.spatial_memory.observe_position(
