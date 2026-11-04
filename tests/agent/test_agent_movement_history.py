@@ -54,3 +54,44 @@ def test_agent_resets_movement_history():
     agent.reset_memory()
 
     assert agent.movement_history.get() == ()
+
+
+def test_agent_escapes_movement_cycle():
+    environment = Environment()
+    agent = Agent()
+
+    environment.foods = set()
+    environment.obstacles = set()
+
+    agent.learning.exploration_rate = 0
+
+    # Simula um ciclo horizontal:
+    # (0, 0) -> (1, 0) -> (0, 0) -> (1, 0)
+    positions = [
+        (0, 0),
+        (1, 0),
+        (0, 0),
+        (1, 0),
+    ]
+
+    for position in positions:
+        environment.cat_position = np.array(position)
+        agent.observe(environment)
+
+    assert agent.movement_history.has_cycle(
+        cycle_length=2
+    )
+
+    state = agent.get_state(environment)
+
+    # O Q-learning prefere voltar para (0, 0).
+    q_values = agent.get_q_values(state)
+    q_values["left"] = 10.0
+    q_values["down"] = 5.0
+    q_values["right"] = 1.0
+
+    action = agent.choose_action(state)
+
+    # O agente deve evitar continuar o ciclo.
+    assert action != "left"
+
