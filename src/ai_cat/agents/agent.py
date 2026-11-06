@@ -90,6 +90,37 @@ class Agent:
         if unvisited_actions:
             valid_actions = unvisited_actions
 
+
+        if self.movement_history.has_cycle(cycle_length=2):
+            positions = self.movement_history.get()
+
+            if len(positions) >= 2:
+                current_position = positions[-1]
+                previous_position = positions[-2]
+
+                dx = previous_position[0] - current_position[0]
+                dy = previous_position[1] - current_position[1]
+
+                reverse_action = None
+
+                if dx == -1 and dy == 0:
+                    reverse_action = "left"
+                elif dx == 1 and dy == 0:
+                    reverse_action = "right"
+                elif dx == 0 and dy == -1:
+                    reverse_action = "up"
+                elif dx == 0 and dy == 1:
+                    reverse_action = "down"
+
+                alternatives = [
+                    action
+                    for action in valid_actions
+                    if action != reverse_action
+                ]
+
+                if alternatives:
+                    valid_actions = alternatives
+
         return max(
             valid_actions,
             key=lambda action: q_values[action],

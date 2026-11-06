@@ -65,8 +65,6 @@ def test_agent_escapes_movement_cycle():
 
     agent.learning.exploration_rate = 0
 
-    # Simula um ciclo horizontal:
-    # (0, 0) -> (1, 0) -> (0, 0) -> (1, 0)
     positions = [
         (0, 0),
         (1, 0),
@@ -78,13 +76,14 @@ def test_agent_escapes_movement_cycle():
         environment.cat_position = np.array(position)
         agent.observe(environment)
 
-    assert agent.movement_history.has_cycle(
-        cycle_length=2
-    )
+    # Todas as alternativas válidas já foram visitadas.
+    agent.spatial_memory.add((2, 0))
+    agent.spatial_memory.add((1, 1))
+
+    assert agent.movement_history.has_cycle(cycle_length=2)
 
     state = agent.get_state(environment)
 
-    # O Q-learning prefere voltar para (0, 0).
     q_values = agent.get_q_values(state)
     q_values["left"] = 10.0
     q_values["down"] = 5.0
@@ -92,6 +91,4 @@ def test_agent_escapes_movement_cycle():
 
     action = agent.choose_action(state)
 
-    # O agente deve evitar continuar o ciclo.
     assert action != "left"
-

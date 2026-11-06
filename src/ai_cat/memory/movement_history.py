@@ -34,3 +34,12 @@ class MovementHistory:
             positions[-cycle_length:]
             == positions[-cycle_length * 2:-cycle_length]
         )
+
+    def get_previous_position(self):
+        positions = self.get()
+
+        if len(positions) < 2:
+            return None
+
+        return positions[-2]
+
