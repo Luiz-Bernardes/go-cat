@@ -92,3 +92,45 @@ def test_agent_escapes_movement_cycle():
     action = agent.choose_action(state)
 
     assert action != "left"
+
+
+def test_agent_escapes_cycle_during_exploration():
+    environment = Environment()
+    agent = Agent()
+
+    environment.foods = set()
+    environment.obstacles = set()
+
+    # Força exploração totalmente aleatória.
+    agent.learning.exploration_rate = 1.0
+
+    # Simula um ciclo entre duas posições.
+    positions = [
+        (0, 0),
+        (1, 0),
+        (0, 0),
+        (1, 0),
+    ]
+
+    for position in positions:
+        environment.cat_position = np.array(position)
+        agent.observe(environment)
+
+    # Marca todas as direções válidas como visitadas.
+    agent.spatial_memory.add((2, 0))
+    agent.spatial_memory.add((1, 1))
+
+    assert agent.movement_history.has_cycle(cycle_length=2)
+
+    state = agent.get_state(environment)
+
+    # Executa várias escolhas para verificar se a
+    # ação que mantém o ciclo continua disponível.
+    actions = {
+        agent.choose_action(state)
+        for _ in range(100)
+    }
+
+    assert "left" not in actions
+    assert actions.issubset({"down", "right"})
+    assert actions

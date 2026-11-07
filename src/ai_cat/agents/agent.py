@@ -66,12 +66,6 @@ class Agent:
 
         q_values = self.learning.get_q_values(state)
 
-        if (
-            random.random()
-            < self.learning.exploration_rate
-        ):
-            return random.choice(valid_actions)
-
         spatial_observation = state[1]
 
         visited_directions = {
@@ -120,6 +114,9 @@ class Agent:
 
                 if alternatives:
                     valid_actions = alternatives
+
+        if random.random() < self.learning.exploration_rate:
+            return random.choice(valid_actions)
 
         return max(
             valid_actions,
