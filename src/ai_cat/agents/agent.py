@@ -85,15 +85,16 @@ class Agent:
             valid_actions = unvisited_actions
 
 
-        if self.movement_history.has_cycle(cycle_length=2):
+        if self.movement_history.get_cycle_length() is not None:
             positions = self.movement_history.get()
 
             if len(positions) >= 2:
                 current_position = positions[-1]
-                previous_position = positions[-2]
+                cycle_length = self.movement_history.get_cycle_length()
+                next_position = positions[-cycle_length]
 
-                dx = previous_position[0] - current_position[0]
-                dy = previous_position[1] - current_position[1]
+                dx = next_position[0] - current_position[0]
+                dy = next_position[1] - current_position[1]
 
                 reverse_action = None
 

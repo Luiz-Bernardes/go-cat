@@ -43,3 +43,14 @@ class MovementHistory:
 
         return positions[-2]
 
+
+    def get_cycle_length(self):
+        positions = self.get()
+
+        max_cycle_length = len(positions) // 2
+
+        for cycle_length in range(2, max_cycle_length + 1):
+            if self.has_cycle(cycle_length):
+                return cycle_length
+
+        return None

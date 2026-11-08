@@ -134,3 +134,50 @@ def test_agent_escapes_cycle_during_exploration():
     assert "left" not in actions
     assert actions.issubset({"down", "right"})
     assert actions
+
+
+def test_agent_escapes_four_position_cycle():
+    environment = Environment()
+    agent = Agent()
+
+    environment.foods = set()
+    environment.obstacles = set()
+
+    agent.learning.exploration_rate = 0
+
+    positions = [
+        (1, 1),
+        (2, 1),
+        (2, 2),
+        (1, 2),
+        (1, 1),
+        (2, 1),
+        (2, 2),
+        (1, 2),
+    ]
+
+    for position in positions:
+        environment.cat_position = np.array(position)
+        agent.observe(environment)
+
+    assert agent.movement_history.has_cycle(cycle_length=4)
+    assert not agent.movement_history.has_cycle(cycle_length=2)
+
+    # Todas as direções adjacentes válidas já foram visitadas.
+    for position in [
+        (0, 2),
+        (1, 3),
+    ]:
+        agent.spatial_memory.add(position)
+
+    state = agent.get_state(environment)
+
+    q_values = agent.get_q_values(state)
+    q_values["up"] = 10.0
+    q_values["left"] = 5.0
+    q_values["down"] = 1.0
+
+    action = agent.choose_action(state)
+
+    # "up" continua o ciclo voltando para (1, 1).
+    assert action != "up"
