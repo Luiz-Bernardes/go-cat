@@ -9,6 +9,7 @@ def test_metrics_start_empty():
         "unique_positions": 0,
         "foods_found": 0,
         "cycles_detected": 0,
+        "cycle_events": 0,
     }
 
 
@@ -65,4 +66,5 @@ def test_reset_clears_all_metrics():
         "unique_positions": 0,
         "foods_found": 0,
         "cycles_detected": 0,
+        "cycle_events": 0,
     }

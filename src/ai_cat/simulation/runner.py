@@ -22,6 +22,8 @@ class SimulationRunner:
             self.environment.cat_position
         )
 
+        cycle_active = False
+
         for _ in range(max_steps):
             state = self.agent.get_state(self.environment)
             action = self.agent.choose_action(state)
@@ -36,8 +38,18 @@ class SimulationRunner:
                 self.environment.cat_position
             )
 
-            if self.agent.movement_history.get_cycle_length() is not None:
+            cycle_detected = (
+                self.agent.movement_history.get_cycle_length() is not None
+            )
+
+            if cycle_detected:
                 metrics.record_cycle()
+
+                if not cycle_active:
+                    metrics.record_cycle_event()
+
+            cycle_active = cycle_detected
+
 
             if done:
                 metrics.record_food()

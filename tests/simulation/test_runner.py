@@ -95,3 +95,28 @@ def test_runner_records_movement_cycle():
     assert metrics.unique_positions == 2
     assert metrics.foods_found == 0
     assert metrics.cycles_detected == 2
+
+
+def test_runner_counts_cycle_events():
+    environment = Environment()
+    agent = Agent()
+
+    runner = SimulationRunner(environment, agent)
+
+    actions = [
+        "right",
+        "left",
+        "right",
+        "left",
+    ]
+
+    with patch.object(environment, "reset"):
+        environment.cat_position = [0, 0]
+        environment.foods = set()
+        environment.obstacles = set()
+
+        with patch.object(agent, "choose_action", side_effect=actions):
+            metrics = runner.run(max_steps=4)
+
+    assert metrics.cycles_detected == 2
+    assert metrics.cycle_events == 1
