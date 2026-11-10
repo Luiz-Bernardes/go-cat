@@ -38,20 +38,28 @@ class QLearning:
 
         return max(q_values, key=q_values.get)
 
-    def learn(self, state, action, reward, next_state):
+    def learn(self, state, action, reward, next_state, done=False):
         q_values = self.get_q_values(state)
-        next_q_values = self.get_q_values(next_state)
 
         current_q = q_values[action]
-        best_next_q = max(next_q_values.values())
+
+        if done:
+            target = reward
+        else:
+            next_q_values = self.get_q_values(next_state)
+            best_next_q = max(next_q_values.values())
+
+            target = (
+                reward
+                + self.discount_factor * best_next_q
+            )
 
         new_q = current_q + self.learning_rate * (
-            reward
-            + self.discount_factor * best_next_q
-            - current_q
+            target - current_q
         )
 
         q_values[action] = new_q
+
 
     def decay_exploration(self):
         self.exploration_rate = max(

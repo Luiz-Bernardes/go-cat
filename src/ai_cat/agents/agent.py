@@ -124,12 +124,13 @@ class Agent:
             key=lambda action: q_values[action],
         )
 
-    def learn(self, state, action, reward, next_state):
+    def learn(self, state, action, reward, next_state, done=False):
         self.learning.learn(
             state,
             action,
             reward,
             next_state,
+            done,
         )
 
     def decay_exploration(self):
