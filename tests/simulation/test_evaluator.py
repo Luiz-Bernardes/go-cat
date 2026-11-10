@@ -1,6 +1,9 @@
 import pytest
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
+from ai_cat.agents.agent import Agent
+from ai_cat.environments.grid_world import Environment
+from ai_cat.simulation.runner import SimulationRunner
 from ai_cat.simulation.evaluator import SimulationEvaluator
 
 
@@ -22,6 +25,45 @@ def make_metrics(
     }
 
     return metrics
+
+
+def test_evaluator_with_real_agent():
+    environment = Environment()
+    agent = Agent()
+
+    runner = SimulationRunner(environment, agent)
+    evaluator = SimulationEvaluator(runner)
+
+    agent.learning.exploration_rate = 0
+
+    result = evaluator.evaluate(
+        episodes=5,
+        max_steps=20,
+    )
+
+    assert result["episodes"] == 5
+    assert 0 <= result["successful_episodes"] <= 5
+    assert 0 <= result["success_rate"] <= 1
+    assert 0 < result["average_steps"] <= 20
+    assert result["average_unique_positions"] >= 1
+    assert result["average_cycles_detected"] >= 0
+    assert result["average_cycle_events"] >= 0
+
+
+def test_evaluator_does_not_train_agent():
+    environment = Environment()
+    agent = Agent()
+
+    runner = SimulationRunner(environment, agent)
+    evaluator = SimulationEvaluator(runner)
+
+    with patch.object(agent, "learn") as learn_mock:
+        evaluator.evaluate(
+            episodes=5,
+            max_steps=20,
+        )
+
+    learn_mock.assert_not_called()
 
 
 def test_evaluator_calculates_statistics():
