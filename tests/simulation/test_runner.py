@@ -120,3 +120,47 @@ def test_runner_counts_cycle_events():
 
     assert metrics.cycles_detected == 2
     assert metrics.cycle_events == 1
+
+
+def test_runner_is_deterministic_without_exploration():
+    environment = Environment()
+    agent = Agent()
+
+    agent.learning.exploration_rate = 0
+
+    runner = SimulationRunner(environment, agent)
+
+    first = runner.run(max_steps=100)
+    second = runner.run(max_steps=100)
+
+    assert first.summary() == second.summary()
+
+
+def test_runner_is_deterministic_in_modified_environment():
+    environment = Environment()
+    agent = Agent()
+
+    agent.learning.exploration_rate = 0
+
+    environment.foods = {(5, 5)}
+    environment.obstacles = {
+        (3, 1),
+        (4, 1),
+        (5, 1),
+    }
+
+    runner = SimulationRunner(environment, agent)
+
+    results = []
+
+    with patch.object(environment, "reset"):
+        for _ in range(10):
+            environment.cat_position = [0, 0]
+
+            metrics = runner.run(max_steps=100)
+            results.append(metrics.summary())
+
+    assert all(
+        result == results[0]
+        for result in results
+    ), results
