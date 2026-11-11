@@ -148,3 +148,67 @@ def test_training_runner_preserves_q_table_between_episodes():
     assert len(agent.memory) == 2
     assert len(agent.movement_history.get()) == 2
     assert len(agent.spatial_memory) == 1
+
+
+def test_training_runner_supports_multiple_environments():
+    environments = [
+        Environment(
+            foods={(2, 2)},
+            obstacles={(1, 1)},
+        ),
+        Environment(
+            foods={(4, 3)},
+            obstacles={(2, 1), (2, 2)},
+        ),
+    ]
+
+    agent = Agent()
+
+    runner = TrainingRunner(
+        environments=environments,
+        agent=agent,
+    )
+
+    runner.run(
+        episodes=2,
+        max_steps=20,
+    )
+
+    assert len(agent.learning.q_table) > 0
+
+
+def test_training_runner_alternates_environments():
+    environment1 = Environment(
+        foods={(2, 2)},
+    )
+
+    environment2 = Environment(
+        foods={(4, 4)},
+    )
+
+    agent = Agent()
+
+    runner = TrainingRunner(
+        environments=[environment1, environment2],
+        agent=agent,
+    )
+
+    with (
+        patch.object(
+            environment1,
+            "reset",
+            wraps=environment1.reset,
+        ) as reset1,
+        patch.object(
+            environment2,
+            "reset",
+            wraps=environment2.reset,
+        ) as reset2,
+    ):
+        runner.run(
+            episodes=6,
+            max_steps=10,
+        )
+
+    assert reset1.call_count == 3
+    assert reset2.call_count == 3
