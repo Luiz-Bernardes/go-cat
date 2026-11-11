@@ -3,24 +3,28 @@ import numpy as np
 from ai_cat.perception.perception import Perception, PerceptionType
 
 class Environment:
-    def __init__(self, size=10):
+    def __init__(self, size=10, foods=None, obstacles=None):
         self.size = size
+
+        self.initial_foods = (
+            {(7, 7), (2, 6), (8, 2)}
+            if foods is None
+            else set(foods)
+        )
+
+        self.initial_obstacles = (
+            {(3, 1), (4, 1), (5, 1)}
+            if obstacles is None
+            else set(obstacles)
+        )
+
         self.reset()
 
     def reset(self):
         self.cat_position = np.array([0, 0])
 
-        self.foods = {
-            (7, 7),
-            (2, 6),
-            (8, 2),
-        }
-
-        self.obstacles = {
-            (3, 1),
-            (4, 1),
-            (5, 1),
-        }
+        self.foods = self.initial_foods.copy()
+        self.obstacles = self.initial_obstacles.copy()
 
     def step(self, action):
         x, y = self.cat_position

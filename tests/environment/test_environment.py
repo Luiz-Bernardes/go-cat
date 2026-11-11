@@ -111,3 +111,23 @@ def test_environment_returns_perception_state():
         PerceptionType.EMPTY,
         PerceptionType.OBSTACLE,
     )
+
+def test_environment_supports_custom_scenario():
+    foods = {(5, 5)}
+    obstacles = {(1, 0), (2, 0)}
+
+    environment = Environment(
+        size=10,
+        foods=foods,
+        obstacles=obstacles,
+    )
+
+    assert environment.foods == foods
+    assert environment.obstacles == obstacles
+
+    environment.step("down")
+    environment.reset()
+
+    assert tuple(environment.cat_position) == (0, 0)
+    assert environment.foods == foods
+    assert environment.obstacles == obstacles

@@ -27,31 +27,19 @@ def evaluate_scenarios(agent):
     results = {}
 
     for name, scenario in SCENARIOS.items():
-        environment = Environment()
-
-        environment.foods = scenario["foods"].copy()
-        environment.obstacles = scenario["obstacles"].copy()
+        environment = Environment(
+            size=10,
+            foods=scenario["foods"],
+            obstacles=scenario["obstacles"],
+        )
 
         runner = SimulationRunner(environment, agent)
         evaluator = SimulationEvaluator(runner)
 
-        
-        def reset_scenario():
-            environment.cat_position = [0, 0]
-            environment.foods = scenario["foods"].copy()
-            environment.obstacles = scenario["obstacles"].copy()
-
-
-        with patch.object(
-            environment,
-            "reset",
-            side_effect=reset_scenario,
-        ):
-            results[name] = evaluator.evaluate(
-                episodes=100,
-                max_steps=100,
-            )
-
+        results[name] = evaluator.evaluate(
+            episodes=100,
+            max_steps=100,
+        )
 
     return results
 
