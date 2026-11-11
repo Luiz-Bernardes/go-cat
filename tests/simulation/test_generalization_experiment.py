@@ -30,3 +30,24 @@ def test_generalization_experiment_is_reproducible():
     second = run_seeded_experiment(seed=42)
 
     assert first == second
+
+
+def test_evaluate_scenarios_uses_custom_scenarios():
+    agent = Agent()
+    agent.learning.exploration_rate = 0
+
+    custom_scenarios = {
+        "custom_environment": {
+            "foods": {(1, 0)},
+            "obstacles": set(),
+        },
+    }
+
+    results = evaluate_scenarios(
+        agent,
+        scenarios=custom_scenarios,
+    )
+
+    assert list(results.keys()) == ["custom_environment"]
+    assert results["custom_environment"]["episodes"] == 100
+    assert results["custom_environment"]["success_rate"] == 1.0

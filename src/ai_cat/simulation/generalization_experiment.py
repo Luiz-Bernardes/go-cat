@@ -23,10 +23,13 @@ SCENARIOS = {
 }
 
 
-def evaluate_scenarios(agent):
+def evaluate_scenarios(agent, scenarios=None):
+    if scenarios is None:
+        scenarios = SCENARIOS
+
     results = {}
 
-    for name, scenario in SCENARIOS.items():
+    for name, scenario in scenarios.items():
         environment = Environment(
             size=10,
             foods=scenario["foods"],
