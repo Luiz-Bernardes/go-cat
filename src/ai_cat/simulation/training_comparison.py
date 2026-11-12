@@ -31,7 +31,7 @@ UNSEEN_SCENARIOS = {
     },
 }
 
-def train_fixed_agent(seed=42):
+def train_fixed_agent(seed=42, episodes=1000):
     random.seed(seed)
 
     agent = Agent()
@@ -40,7 +40,7 @@ def train_fixed_agent(seed=42):
     trainer = TrainingRunner(environment, agent)
 
     trainer.run(
-        episodes=1000,
+        episodes=episodes,
         max_steps=100,
     )
 
@@ -49,7 +49,7 @@ def train_fixed_agent(seed=42):
     return agent
 
 
-def train_varied_agent(seed=42):
+def train_varied_agent(seed=42, episodes=1000):
     random.seed(seed)
 
     agent = Agent()
@@ -72,7 +72,7 @@ def train_varied_agent(seed=42):
     )
 
     trainer.run(
-        episodes=1000,
+        episodes=episodes,
         max_steps=100,
     )
 

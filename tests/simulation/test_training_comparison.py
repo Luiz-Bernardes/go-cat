@@ -16,3 +16,19 @@ def test_training_strategies_support_multiple_seeds():
 
         assert fixed_agent.learning.exploration_rate == 0
         assert varied_agent.learning.exploration_rate == 0
+
+
+def test_training_strategies_accept_custom_episodes():
+    fixed_agent = train_fixed_agent(
+        seed=42,
+        episodes=50,
+    )
+
+    varied_agent = train_varied_agent(
+        seed=42,
+        episodes=50,
+    )
+
+    assert len(fixed_agent.learning.q_table) > 0
+    assert len(varied_agent.learning.q_table) > 0
+
