@@ -31,3 +31,35 @@ def compare_q_tables(before, after):
         "changed_states": changed_states,
         "changed_actions": changed_actions,
     }
+
+
+def compare_policies(before, after):
+    shared_states = set(before) & set(after)
+
+    changed_policies = 0
+    unchanged_policies = 0
+
+    for state in shared_states:
+        before_actions = before[state]
+        after_actions = after[state]
+
+        best_before = max(
+            before_actions,
+            key=before_actions.get,
+        )
+
+        best_after = max(
+            after_actions,
+            key=after_actions.get,
+        )
+
+        if best_before != best_after:
+            changed_policies += 1
+        else:
+            unchanged_policies += 1
+
+    return {
+        "shared_states": len(shared_states),
+        "changed_policies": changed_policies,
+        "unchanged_policies": unchanged_policies,
+    }

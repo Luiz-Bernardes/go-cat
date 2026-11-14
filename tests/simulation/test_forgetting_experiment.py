@@ -23,7 +23,7 @@ def test_evaluation_preserves_exploration_rate():
 def test_forgetting_experiment_can_run_silently(capsys):
     from ai_cat.simulation.forgetting_experiment import run_experiment
 
-    before, after, changes = run_experiment(
+    before, after, changes, policies = run_experiment(
         seed=42,
         verbose=False,
     )
@@ -41,4 +41,12 @@ def test_forgetting_experiment_can_run_silently(capsys):
     assert changes["states_before"] > 0
     assert changes["states_after"] > 0
     assert changes["shared_states"] > 0
+
+    assert policies["shared_states"] == changes["shared_states"]
+
+    assert (
+        policies["changed_policies"]
+        + policies["unchanged_policies"]
+        == policies["shared_states"]
+    )
 

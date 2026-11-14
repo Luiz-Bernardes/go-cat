@@ -8,7 +8,7 @@ def evaluate_seeds(seeds=SEEDS):
     results = []
 
     for seed in seeds:
-        before, after, _ = run_experiment(
+        before, after, _, _ = run_experiment(
             seed=seed,
             verbose=False,
         )

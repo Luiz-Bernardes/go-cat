@@ -5,6 +5,12 @@ from ai_cat.simulation.q_table_analysis import (
     compare_q_tables,
 )
 
+from ai_cat.simulation.q_table_analysis import (
+    snapshot_q_table,
+    compare_q_tables,
+    compare_policies,
+)
+
 from ai_cat.agents.agent import Agent
 from ai_cat.environments.grid_world import Environment
 from ai_cat.training.runner import TrainingRunner
@@ -79,6 +85,11 @@ def run_experiment(seed=42, verbose=True):
         q_table_after,
     )
 
+    policy_changes = compare_policies(
+        q_table_before,
+        q_table_after,
+    )
+
     after = evaluate_agent(
         agent,
         environment_a,
@@ -102,7 +113,12 @@ def run_experiment(seed=42, verbose=True):
         print(f"Changed states: {q_table_changes['changed_states']}")
         print(f"Changed actions: {q_table_changes['changed_actions']}")
 
-    return before, after, q_table_changes
+        print("\n=== POLICY ANALYSIS ===")
+        print(f"Shared states: {policy_changes['shared_states']}")
+        print(f"Changed policies: {policy_changes['changed_policies']}")
+        print(f"Unchanged policies: {policy_changes['unchanged_policies']}")
+
+    return before, after, q_table_changes, policy_changes
 
 
 if __name__ == "__main__":
