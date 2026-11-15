@@ -23,7 +23,14 @@ def test_evaluation_preserves_exploration_rate():
 def test_forgetting_experiment_can_run_silently(capsys):
     from ai_cat.simulation.forgetting_experiment import run_experiment
 
-    before, after, changes, policies = run_experiment(
+    (
+        before,
+        after,
+        changes,
+        policies,
+        trajectory_before,
+        trajectory_after,
+    ) = run_experiment(
         seed=42,
         verbose=False,
     )
@@ -49,4 +56,10 @@ def test_forgetting_experiment_can_run_silently(capsys):
         + policies["unchanged_policies"]
         == policies["shared_states"]
     )
+
+    assert trajectory_before[0]["position"] == (0, 0)
+    assert trajectory_after[0]["position"] == (0, 0)
+
+    assert len(trajectory_before) - 1 == before["average_steps"]
+    assert len(trajectory_after) - 1 == after["average_steps"]
 

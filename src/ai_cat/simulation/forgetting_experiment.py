@@ -16,6 +16,7 @@ from ai_cat.environments.grid_world import Environment
 from ai_cat.training.runner import TrainingRunner
 from ai_cat.simulation.runner import SimulationRunner
 from ai_cat.simulation.evaluator import SimulationEvaluator
+from ai_cat.simulation.trajectory_analysis import record_trajectory
 
 
 def evaluate_agent(agent, environment):
@@ -68,6 +69,11 @@ def run_experiment(seed=42, verbose=True):
         environment_a,
     )
 
+    trajectory_before = record_trajectory(
+        agent,
+        environment_a,
+    )
+
     trainer_b = TrainingRunner(
         environment=environment_b,
         agent=agent,
@@ -95,6 +101,11 @@ def run_experiment(seed=42, verbose=True):
         environment_a,
     )
 
+    trajectory_after = record_trajectory(
+        agent,
+        environment_a,
+    )
+
     if verbose:
         print("\n=== FORGETTING EXPERIMENT ===")
 
@@ -118,7 +129,32 @@ def run_experiment(seed=42, verbose=True):
         print(f"Changed policies: {policy_changes['changed_policies']}")
         print(f"Unchanged policies: {policy_changes['unchanged_policies']}")
 
-    return before, after, q_table_changes, policy_changes
+        print("\n=== TRAJECTORY BEFORE TRAINING B ===")
+
+        for step in trajectory_before:
+            print(
+                f"Step {step['step']}: "
+                f"Position {step['position']} | "
+                f"Action {step['action']}"
+            )
+
+        print("\n=== TRAJECTORY AFTER TRAINING B ===")
+
+        for step in trajectory_after:
+            print(
+                f"Step {step['step']}: "
+                f"Position {step['position']} | "
+                f"Action {step['action']}"
+            )
+
+    return (
+        before,
+        after,
+        q_table_changes,
+        policy_changes,
+        trajectory_before,
+        trajectory_after,
+    )
 
 
 if __name__ == "__main__":
