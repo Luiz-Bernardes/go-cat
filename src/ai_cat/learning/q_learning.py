@@ -21,6 +21,10 @@ class QLearning:
         self.exploration_decay = exploration_decay
         self.min_exploration_rate = min_exploration_rate
 
+        self.tracked_state = None
+        self.tracked_action = None
+        self.tracked_updates = []
+
     def get_q_values(self, state):
         if state not in self.q_table:
             self.q_table[state] = {
@@ -38,7 +42,15 @@ class QLearning:
 
         return max(q_values, key=q_values.get)
 
-    def learn(self, state, action, reward, next_state, done=False):
+    def learn(
+        self,
+        state,
+        action,
+        reward,
+        next_state,
+        done=False,
+        valid_next_actions=None,
+    ):
         q_values = self.get_q_values(state)
 
         current_q = q_values[action]
@@ -47,7 +59,16 @@ class QLearning:
             target = reward
         else:
             next_q_values = self.get_q_values(next_state)
-            best_next_q = max(next_q_values.values())
+
+            if valid_next_actions is None:
+                best_next_q = max(next_q_values.values())
+            elif valid_next_actions:
+                best_next_q = max(
+                    next_q_values[action]
+                    for action in valid_next_actions
+                )
+            else:
+                best_next_q = 0.0
 
             target = (
                 reward
@@ -60,9 +81,33 @@ class QLearning:
 
         q_values[action] = new_q
 
+        # Registra a atualização somente se estivermos
+        # monitorando essa combinação de estado e ação.
+        if (
+            state == self.tracked_state
+            and action == self.tracked_action
+        ):
+            self.tracked_updates.append({
+                "state": state,
+                "action": action,
+                "reward": reward,
+                "target": target,
+                "td_error": target - current_q,
+                "old_value": current_q,
+                "new_value": new_q,
+                "next_state": next_state,
+                "next_q_values": self.get_q_values(next_state).copy(),
+            })
+
 
     def decay_exploration(self):
         self.exploration_rate = max(
             self.min_exploration_rate,
             self.exploration_rate * self.exploration_decay,
         )
+
+
+    def start_tracking(self, state, action):
+        self.tracked_state = state
+        self.tracked_action = action
+        self.tracked_updates = []

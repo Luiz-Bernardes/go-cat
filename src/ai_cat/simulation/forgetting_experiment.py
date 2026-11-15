@@ -11,13 +11,18 @@ from ai_cat.simulation.q_table_analysis import (
     compare_policies,
 )
 
+from ai_cat.simulation.trajectory_analysis import (
+    record_trajectory,
+    inspect_initial_decision,
+    find_first_divergence,
+)
+
 from ai_cat.agents.agent import Agent
 from ai_cat.environments.grid_world import Environment
 from ai_cat.training.runner import TrainingRunner
 from ai_cat.simulation.runner import SimulationRunner
 from ai_cat.simulation.evaluator import SimulationEvaluator
-from ai_cat.simulation.trajectory_analysis import record_trajectory
-
+from ai_cat.simulation.trajectory_analysis import record_trajectory, find_best_actions
 
 def evaluate_agent(agent, environment):
     previous_exploration = agent.learning.exploration_rate
@@ -64,7 +69,18 @@ def run_experiment(seed=42, verbose=True):
 
     q_table_before = snapshot_q_table(agent)
 
+    # Captura o estado inicial do ambiente A
+    initial_state = inspect_initial_decision(
+        agent,
+        environment_a,
+    )["state"]
+
     before = evaluate_agent(
+        agent,
+        environment_a,
+    )
+
+    initial_decision_before = inspect_initial_decision(
         agent,
         environment_a,
     )
@@ -79,10 +95,17 @@ def run_experiment(seed=42, verbose=True):
         agent=agent,
     )
 
+    agent.learning.start_tracking(
+        state=initial_state,
+        action="right",
+    )
+
     trainer_b.run(
         episodes=1000,
         max_steps=100,
     )
+
+    tracked_updates = agent.learning.tracked_updates.copy()
 
     q_table_after = snapshot_q_table(agent)
 
@@ -101,9 +124,19 @@ def run_experiment(seed=42, verbose=True):
         environment_a,
     )
 
+    initial_decision_after = inspect_initial_decision(
+        agent,
+        environment_a,
+    )
+
     trajectory_after = record_trajectory(
         agent,
         environment_a,
+    )
+
+    first_divergence = find_first_divergence(
+        trajectory_before,
+        trajectory_after,
     )
 
     if verbose:
@@ -147,6 +180,116 @@ def run_experiment(seed=42, verbose=True):
                 f"Action {step['action']}"
             )
 
+        print("\n=== INITIAL DECISION ANALYSIS ===")
+
+        print(
+            "Same initial state:",
+            initial_decision_before["state"]
+            == initial_decision_after["state"],
+        )
+
+        print("\nQ-values:")
+
+        for action in agent.actions:
+            before_q = initial_decision_before["q_values"][action]
+            after_q = initial_decision_after["q_values"][action]
+
+            print(
+                f"{action:>5} | "
+                f"Before: {before_q:>8.4f} | "
+                f"After: {after_q:>8.4f} | "
+                f"Delta: {after_q - before_q:+.4f}"
+            )
+
+        print(
+            "\nChosen action:",
+            initial_decision_before["chosen_action"],
+            "->",
+            initial_decision_after["chosen_action"],
+        )
+
+        if first_divergence is not None:
+            print(
+                "First divergence at step:",
+                first_divergence["step"],
+            )
+
+        print("\n=== INITIAL ACTION COMPARISON ===")
+
+        valid_actions = ["down", "right"]
+
+        for label, decision in [
+            ("BEFORE", initial_decision_before),
+            ("AFTER", initial_decision_after),
+        ]:
+            q_values = decision["q_values"]
+
+            best_actions = find_best_actions(
+                q_values,
+                valid_actions,
+            )
+
+            print(f"\n{label} TRAINING B")
+
+            for action in valid_actions:
+                print(
+                    f"{action}: {q_values[action]:.12f}"
+                )
+
+            print(f"Best actions (tolerance): {best_actions}")
+
+            print(
+                "Exact equality:",
+                q_values["down"] == q_values["right"],
+            )
+
+            print(
+                "Chosen action:",
+                decision["chosen_action"],
+            )
+
+        print("\n=== Q-LEARNING UPDATE TRACKING ===")
+
+        print(f"Total updates: {len(tracked_updates)}")
+
+        if tracked_updates:
+            print("\nFirst update:")
+            print(tracked_updates[0])
+
+            print("\nLast update:")
+            print(tracked_updates[-1])
+
+            print("\nQ-value evolution:")
+
+            selected_updates = [1, 7, 8, 10, 20, 30, 40, 50]
+
+            for index in selected_updates:
+                if index > len(tracked_updates):
+                    continue
+
+                update = tracked_updates[index - 1]
+
+                print(f"\n=== UPDATE {index} ===")
+
+                print(f"Reward: {update['reward']}")
+                print(f"Target: {update['target']:.8f}")
+                print(f"TD Error: {update['td_error']:.8f}")
+
+                print(
+                    f"Q: {update['old_value']:.8f} -> "
+                    f"{update['new_value']:.8f}"
+                )
+
+                print("Next state Q-values:")
+
+                for action, value in update["next_q_values"].items():
+                    print(f"  {action}: {value:.8f}")
+
+                print(
+                    "Best next Q:",
+                    max(update["next_q_values"].values())
+                )
+
     return (
         before,
         after,
@@ -154,6 +297,9 @@ def run_experiment(seed=42, verbose=True):
         policy_changes,
         trajectory_before,
         trajectory_after,
+        initial_decision_before,
+        initial_decision_after,
+        first_divergence,
     )
 
 

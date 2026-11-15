@@ -30,6 +30,9 @@ def test_forgetting_experiment_can_run_silently(capsys):
         policies,
         trajectory_before,
         trajectory_after,
+        initial_before,
+        initial_after,
+        divergence,
     ) = run_experiment(
         seed=42,
         verbose=False,
@@ -63,3 +66,10 @@ def test_forgetting_experiment_can_run_silently(capsys):
     assert len(trajectory_before) - 1 == before["average_steps"]
     assert len(trajectory_after) - 1 == after["average_steps"]
 
+    assert initial_before["state"] == initial_after["state"]
+
+    assert initial_before["chosen_action"] == trajectory_before[1]["action"]
+    assert initial_after["chosen_action"] == trajectory_after[1]["action"]
+
+    assert divergence is not None
+    assert divergence["step"] == 1

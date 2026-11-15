@@ -1,3 +1,6 @@
+from math import isclose
+
+
 def record_trajectory(agent, environment, max_steps=100):
     if max_steps <= 0:
         raise ValueError("Maximum steps must be greater than zero")
@@ -88,3 +91,24 @@ def inspect_initial_decision(agent, environment):
 
     finally:
         agent.learning.exploration_rate = previous_exploration
+
+
+def find_best_actions(q_values, valid_actions):
+    if not valid_actions:
+        raise ValueError("Valid actions cannot be empty")
+
+    best_value = max(
+        q_values[action]
+        for action in valid_actions
+    )
+
+    return [
+        action
+        for action in valid_actions
+        if isclose(
+            q_values[action],
+            best_value,
+            rel_tol=1e-9,
+            abs_tol=1e-9,
+        )
+    ]

@@ -107,3 +107,31 @@ class Environment:
             print(row)
 
         print()
+
+    def get_valid_actions(self):
+        x, y = self.cat_position
+
+        possible_actions = {
+            "up": (x, y - 1),
+            "down": (x, y + 1),
+            "left": (x - 1, y),
+            "right": (x + 1, y),
+        }
+
+        valid_actions = []
+
+        for action, (new_x, new_y) in possible_actions.items():
+            # Verifica os limites do mapa
+            if not (
+                0 <= new_x < self.size
+                and 0 <= new_y < self.size
+            ):
+                continue
+
+            # Verifica se existe um obstáculo
+            if (int(new_x), int(new_y)) in self.obstacles:
+                continue
+
+            valid_actions.append(action)
+
+        return valid_actions

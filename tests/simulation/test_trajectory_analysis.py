@@ -2,7 +2,7 @@ import pytest
 
 from ai_cat.agents.agent import Agent
 from ai_cat.environments.grid_world import Environment
-from ai_cat.simulation.trajectory_analysis import record_trajectory, find_first_divergence, inspect_initial_decision
+from ai_cat.simulation.trajectory_analysis import record_trajectory, find_first_divergence, inspect_initial_decision, find_best_actions
 
 def test_record_trajectory_starts_at_origin():
     agent = Agent()
@@ -121,3 +121,39 @@ def test_inspect_initial_decision_preserves_exploration():
     )
 
     assert agent.learning.exploration_rate == 0.5
+
+
+def test_find_best_actions_detects_tie():
+    q_values = {
+        "up": 0.0,
+        "down": -1.0,
+        "left": 0.0,
+        "right": -1.0,
+    }
+
+    valid_actions = ["down", "right"]
+
+    result = find_best_actions(
+        q_values,
+        valid_actions,
+    )
+
+    assert result == ["down", "right"]
+
+
+def test_find_best_actions_detects_single_best_action():
+    q_values = {
+        "up": 0.0,
+        "down": -1.0,
+        "left": 0.0,
+        "right": -0.0224,
+    }
+
+    valid_actions = ["down", "right"]
+
+    result = find_best_actions(
+        q_values,
+        valid_actions,
+    )
+
+    assert result == ["right"]
