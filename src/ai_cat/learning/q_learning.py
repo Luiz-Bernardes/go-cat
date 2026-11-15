@@ -24,6 +24,7 @@ class QLearning:
         self.tracked_state = None
         self.tracked_action = None
         self.tracked_updates = []
+        self.visit_counts = {}
 
     def get_q_values(self, state):
         if state not in self.q_table:
@@ -51,6 +52,10 @@ class QLearning:
         done=False,
         valid_next_actions=None,
     ):
+        key = (state, action)
+
+        self.visit_counts[key] = self.visit_counts.get(key, 0) + 1
+
         q_values = self.get_q_values(state)
 
         current_q = q_values[action]
@@ -97,6 +102,11 @@ class QLearning:
                 "new_value": new_q,
                 "next_state": next_state,
                 "next_q_values": self.get_q_values(next_state).copy(),
+                "valid_next_actions": (
+                    valid_next_actions.copy()
+                    if valid_next_actions is not None
+                    else None
+                ),
             })
 
 
@@ -111,3 +121,7 @@ class QLearning:
         self.tracked_state = state
         self.tracked_action = action
         self.tracked_updates = []
+
+
+    def get_visit_count(self, state, action):
+        return self.visit_counts.get((state, action), 0)

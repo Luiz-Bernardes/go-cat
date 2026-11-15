@@ -107,6 +107,21 @@ def run_experiment(seed=42, verbose=True):
 
     tracked_updates = agent.learning.tracked_updates.copy()
 
+    next_state = tracked_updates[0]["next_state"]
+
+    left_q_value = agent.learning.get_q_values(next_state)["left"]
+
+    left_visits = agent.learning.get_visit_count(
+        next_state,
+        "left",
+    )
+
+    if verbose:
+        print("\n=== LEFT ACTION INVESTIGATION ===")
+        print(f"Next state: {next_state}")
+        print(f"Final Q(left): {left_q_value:.12f}")
+        print(f"Visits(left): {left_visits}")
+
     q_table_after = snapshot_q_table(agent)
 
     q_table_changes = compare_q_tables(
@@ -285,10 +300,20 @@ def run_experiment(seed=42, verbose=True):
                 for action, value in update["next_q_values"].items():
                     print(f"  {action}: {value:.8f}")
 
-                print(
-                    "Best next Q:",
-                    max(update["next_q_values"].values())
+                valid_actions = update["valid_next_actions"]
+                next_q_values = update["next_q_values"]
+
+                if valid_actions is None:
+                    valid_actions = list(next_q_values.keys())
+
+                best_next_q = (
+                    max(next_q_values[action] for action in valid_actions)
+                    if valid_actions
+                    else 0.0
                 )
+
+                print("Valid next actions:", valid_actions)
+                print("Best valid next Q:", best_next_q)
 
     return (
         before,

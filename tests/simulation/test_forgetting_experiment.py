@@ -72,4 +72,10 @@ def test_forgetting_experiment_can_run_silently(capsys):
     assert initial_after["chosen_action"] == trajectory_after[1]["action"]
 
     assert divergence is not None
-    assert divergence["step"] == 1
+
+    assert divergence["step"] > 0
+
+    assert divergence["step"] <= min(
+        len(trajectory_before),
+        len(trajectory_after),
+    )

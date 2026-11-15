@@ -45,12 +45,15 @@ class TrainingRunner:
 
                 next_state = self.agent.get_state(environment)
 
+                valid_next_actions = environment.get_valid_actions()
+
                 self.agent.learn(
-                    state,
-                    action,
-                    reward,
-                    next_state,
-                    done,
+                    state=state,
+                    action=action,
+                    reward=reward,
+                    next_state=next_state,
+                    done=done,
+                    valid_next_actions=valid_next_actions,
                 )
 
                 if done:

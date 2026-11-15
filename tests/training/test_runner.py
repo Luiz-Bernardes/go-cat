@@ -52,6 +52,7 @@ def test_training_runner_learns_from_correct_transition():
     environment = Mock()
     agent = Mock()
 
+    environment.get_valid_actions.return_value = ["down", "right"]
     environment.cat_position = [0, 0]
     environment.step.return_value = (10, True)
 
@@ -78,11 +79,12 @@ def test_training_runner_learns_from_correct_transition():
     )
 
     agent.learn.assert_called_once_with(
-        initial_state,
-        "right",
-        10,
-        next_state,
-        True,
+        state=initial_state,
+        action="right",
+        reward=10,
+        next_state=next_state,
+        done=True,
+        valid_next_actions=["down", "right"],
     )
 
 
